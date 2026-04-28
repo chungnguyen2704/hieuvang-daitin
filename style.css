@@ -630,7 +630,7 @@ body {
 /* Lora — Vietnamese-safe luxury serif, render OK cho cả caps + mixed */
 .tv__product-name {
   font-family: "Times New Roman", Times, serif;
-  font-size: clamp(1.5rem, 2.6vw, 3rem);
+  font-size: clamp(2rem, 3.6vw, 4rem);
   font-weight: 600;
   color: var(--c-cream-50);
   line-height: 1.1;
@@ -887,7 +887,7 @@ body.public-page {
   font-family: "Be Vietnam Pro", sans-serif;
   font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.1em;
   color: var(--c-gold-light);
   margin-top: clamp(0.1rem, 0.4vh, 0.4rem);
   position: relative;
@@ -896,6 +896,10 @@ body.public-page {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
+  max-width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+  word-break: break-word;
 }
 .public__address::before {
   content: "◆";
@@ -907,7 +911,7 @@ body.public-page {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.78rem;
+  font-size: clamp(0.68rem, 2.5vw, 0.78rem);
   color: var(--c-gold-light);
   background: rgba(255, 215, 0, 0.08);
   border: 1px solid var(--c-border-gold);
@@ -915,6 +919,10 @@ body.public-page {
   border-radius: 999px;
   margin-top: clamp(0.5rem, 1.5vh, 1rem);
   position: relative;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .public__updated::before {
   content: "";
@@ -1011,11 +1019,12 @@ body.public-page {
   opacity: 0.75;
 }
 .price-row__value {
-  font-size: 1.5rem;
+  font-size: clamp(1.1rem, 4vw, 1.5rem);
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   margin-top: 0.25rem;
   letter-spacing: -0.02em;
+  word-break: break-all;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;

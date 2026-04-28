@@ -4,34 +4,140 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#1A0E0E">
-  <title>Bảng giá vàng</title>
+  <title>Bảng giá vàng — Đại Tín</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800;900&family=Lora:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,500;1,600&display=swap">
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Public refresh button — sticky, vừa tay */
-    .public-refresh {
+    /* ── Mobile-specific overrides ── */
+    body.public-page {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* Header logo + brand */
+    .mob__hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: clamp(1rem, 4vw, 1.5rem) 1rem clamp(0.75rem, 3vw, 1.25rem);
+      text-align: center;
+      position: relative;
+    }
+    .mob__logo {
+      width: clamp(72px, 20vw, 100px);
+      height: clamp(72px, 20vw, 100px);
+      object-fit: contain;
+      filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.45));
+      animation: floatLogo 4s ease-in-out infinite;
+    }
+    @keyframes floatLogo {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-5px); }
+    }
+    .mob__ornament {
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      color: var(--c-gold);
+      opacity: 0.7;
+      margin: 0.1rem 0;
+    }
+
+    /* Clock + date + lunar */
+    .mob__clock {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.1rem;
+      margin-top: 0.25rem;
+    }
+    .mob__clock-time {
+      font-family: "Be Vietnam Pro", sans-serif;
+      font-size: clamp(2rem, 8vw, 2.8rem);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.04em;
+      line-height: 1;
+      background: linear-gradient(180deg, #FFEC8B 0%, #FFD700 50%, #DAA520 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.4));
+    }
+    .mob__clock-time .colon {
+      animation: colonBlink 1s step-end infinite;
+      -webkit-text-fill-color: #FFD700;
+    }
+    @keyframes colonBlink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.1; }
+    }
+    .mob__clock-date {
+      font-family: "Lora", serif;
+      font-size: clamp(0.78rem, 3vw, 0.95rem);
+      font-weight: 600;
+      color: var(--c-gold-pale);
+      letter-spacing: 0.05em;
+    }
+    .mob__clock-lunar {
+      font-family: "Cormorant Garamond", serif;
+      font-style: italic;
+      font-size: clamp(0.75rem, 2.8vw, 0.9rem);
+      color: var(--c-gold-light);
+      opacity: 0.85;
+      letter-spacing: 0.04em;
+    }
+
+    /* Refresh button — sticky bottom */
+    .mob__refresh {
       position: sticky;
-      bottom: 1rem;
+      bottom: calc(1rem + env(safe-area-inset-bottom));
       width: 100%;
       max-width: 480px;
       margin: 1rem auto 0;
       z-index: 5;
     }
-    .public-refresh .btn {
+    .mob__refresh .btn {
       box-shadow: var(--shadow-lg);
     }
     .btn.is-loading svg { animation: spin 1s linear infinite; }
     .btn svg { width: 20px; height: 20px; }
+
+    /* SĐT info in footer */
+    .mob__contact {
+      font-family: "Be Vietnam Pro", sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--c-gold-light);
+      letter-spacing: 0.04em;
+      opacity: 0.8;
+      margin-top: 0.4rem;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
   </style>
 </head>
 <body class="public-page">
   <div id="public-root" class="public">
+
     <header class="public__header">
-      <h1 class="public__shop-name">HIỆU VÀNG</h1>
-      <div class="public__tagline">Đang tải…</div>
-      <div class="public__address"></div>
+      <div class="mob__hero">
+        <img class="mob__logo" src="logo-dai-tin2.png" alt="Logo Đại Tín">
+        <h1 class="public__shop-name">HIỆU VÀNG</h1>
+        <div class="mob__ornament">◆ ◈ ◆</div>
+        <div class="public__tagline">Đang tải…</div>
+        <div class="public__address"></div>
+
+        <div class="mob__clock">
+          <div class="mob__clock-time">
+            <span class="hh">--</span><span class="colon">:</span><span class="mm">--</span>
+          </div>
+          <div class="mob__clock-date">—</div>
+          <div class="mob__clock-lunar">—</div>
+        </div>
+      </div>
+
       <div class="public__updated">
         <span>Đang tải…</span>
       </div>
@@ -41,7 +147,7 @@
       <!-- cards rendered by app.js -->
     </main>
 
-    <div class="public-refresh">
+    <div class="mob__refresh">
       <button id="refresh-btn" class="btn btn--gold btn--xl" aria-label="Cập nhật giá">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 12a9 9 0 1 1-3-6.7L21 8"></path>
@@ -53,9 +159,11 @@
 
     <footer class="public__footer">
       <p class="public__footer-disclaimer">
-        ◆ QUÝ KHÁCH VUI LÒNG KIỂM TRA KỸ TRỌNG LƯỢNG, TUỔI VÀNG VÀ GIÁ NIÊM YẾT TRƯỚC KHI GIAO DỊCH. TIỆM MIỄN TRÁCH SAU KHI ĐÃ HOÀN TẤT THANH TOÁN. ◆
+        ◆ QUÝ KHÁCH VUI LÒNG KIỂM TRA TIỀN, VÀNG TRƯỚC KHI RỜI TIỆM.<br>
+        TIỆM KHÔNG CHỊU TRÁCH NHIỆM SAU KHI ĐÃ HOÀN TẤT GIAO DỊCH. ◆
       </p>
-      <p>Đơn vị: <strong>VND / chỉ</strong> &nbsp;·&nbsp; Giá cập nhật theo thị trường, có thể thay đổi không báo trước.</p>
+      <p>Đơn vị: <strong>VND / chỉ</strong> &nbsp;·&nbsp; Giá cập nhật theo thị trường.</p>
+      <p class="mob__contact">SĐT: 0919.157.710 (HIỀN) &nbsp;·&nbsp; 0987.387.149 (THANH NỮ)</p>
     </footer>
   </div>
 
@@ -63,6 +171,32 @@
   <script src="app.js"></script>
   <script>
     TiemVang.init('public');
+
+    // Âm lịch (thuật toán Ho Ngoc Duc) — dùng lại từ tv.html
+    const TZ = 7;
+    function _jd(d,m,y){var a=Math.floor((14-m)/12),yy=y+4800-a,mm=m+12*a-3,j=d+Math.floor((153*mm+2)/5)+365*yy+Math.floor(yy/4)-Math.floor(yy/100)+Math.floor(yy/400)-32045;return j<2299161?d+Math.floor((153*mm+2)/5)+365*yy+Math.floor(yy/4)-32083:j;}
+    function _newMoon(k){var T=k/1236.85,T2=T*T,T3=T2*T,dr=Math.PI/180,Jd=2415020.75933+29.53058868*k+0.0001178*T2-0.000000155*T3+0.00033*Math.sin((166.56+132.87*T-0.009173*T2)*dr),M=359.2242+29.10535608*k-0.0000333*T2,Mp=306.0253+385.81691806*k+0.0107306*T2,F=21.2964+390.67050646*k-0.0016528*T2,C=(0.1734-0.000393*T)*Math.sin(M*dr)+0.0021*Math.sin(2*M*dr)-0.4068*Math.sin(Mp*dr)+0.0161*Math.sin(2*Mp*dr)-0.0051*Math.sin((M+Mp)*dr)-0.0074*Math.sin((M-Mp)*dr)+0.0104*Math.sin(2*F*dr),dt=T>=-11?-0.000278+0.000265*T+0.000262*T2:0.001+0.000839*T+0.0002261*T2;return Math.floor(Jd+C-dt+0.5+TZ/24);}
+    function _sunLng(jdn){var T=(jdn-2451545.5-TZ/24)/36525,T2=T*T,dr=Math.PI/180,M=357.5291+35999.0503*T-0.0001559*T2,L0=280.46645+36000.76983*T+0.0003032*T2,DL=(1.9146-0.004817*T-0.000014*T2)*Math.sin(M*dr)+(0.019993-0.000101*T)*Math.sin(2*M*dr)+0.00029*Math.sin(3*M*dr),L=(L0+DL)*dr;L-=2*Math.PI*Math.floor(L/(2*Math.PI));return Math.floor(L/Math.PI*6);}
+    function _m11(y){var off=_jd(31,12,y)-2415021,k=Math.floor(off/29.530588853),nm=_newMoon(k);return _sunLng(nm)>=9?_newMoon(k-1):nm;}
+    function _leapOff(a11){var k=Math.floor((a11-2415021.076998695)/29.530588853+0.5),i=1,arc=_sunLng(_newMoon(k+i)),last;do{last=arc;i++;arc=_sunLng(_newMoon(k+i));}while(arc!==last&&i<14);return i-1;}
+    function solar2Lunar(d,m,y){var jd=_jd(d,m,y),k=Math.floor((jd-2415021.076998695)/29.530588853),ms=_newMoon(k+1);ms>jd&&(ms=_newMoon(k));var a11=_m11(y),b11=a11,ly;a11>=ms?(ly=y,a11=_m11(y-1)):(ly=y+1,b11=_m11(y+1));var ld=jd-ms+1,diff=Math.floor((ms-a11)/29),lm=diff+11,leap=0;b11-a11>365&&(_leapOff(a11)<=diff?(lm=diff+10,diff===_leapOff(a11)&&(leap=1)):0);lm>12&&(lm-=12);lm>=11&&diff<4&&ly--;return[ld,lm,ly,leap];}
+
+    function tickClock() {
+      const now = new Date();
+      const hh    = document.querySelector('.mob__clock-time .hh');
+      const mm    = document.querySelector('.mob__clock-time .mm');
+      const date  = document.querySelector('.mob__clock-date');
+      const lunar = document.querySelector('.mob__clock-lunar');
+      if (hh) hh.textContent = String(now.getHours()).padStart(2, '0');
+      if (mm) mm.textContent = String(now.getMinutes()).padStart(2, '0');
+      if (date) date.textContent = now.toLocaleDateString('vi-VN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+      if (lunar) {
+        const [ld, lm, , leap] = solar2Lunar(now.getDate(), now.getMonth()+1, now.getFullYear());
+        lunar.textContent = `(${String(ld).padStart(2,'0')}/${lm}${leap?' nhuận':''} Âm lịch)`;
+      }
+    }
+    tickClock();
+    setInterval(tickClock, 1000);
   </script>
 </body>
 </html>
