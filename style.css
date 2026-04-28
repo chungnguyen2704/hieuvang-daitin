@@ -638,14 +638,18 @@ body {
   font-feature-settings: "liga" 0;
 }
 .tv__product-unit {
-  display: block;
+  display: inline-block;
   font-family: "Be Vietnam Pro", sans-serif;
-  font-size: clamp(0.75rem, 0.95vw, 1.05rem);
-  color: var(--c-gold-light);
-  font-weight: 400;
-  letter-spacing: 0.12em;
+  font-size: clamp(0.95rem, 1.3vw, 1.4rem);
+  color: var(--c-gold-dark, #8B6914);
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  opacity: 0.6;
+  background: rgba(255, 215, 0, 0.12);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: 4px;
+  padding: 0.05em 0.45em;
+  opacity: 1;
 }
 
 .tv__price-cell {

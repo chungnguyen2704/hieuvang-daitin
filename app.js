@@ -63,10 +63,10 @@
       tagline: "Vàng bạc trang sức — Đá quý phong thuỷ",
       address: "302 - 304 Lê Duẩn, An Nhơn, Gia Lai",
       products: [
-         { name: "VÀNG NHẪN 980",   unit: "nghìn/chỉ", buy: 14860000, sell: 15160000 },
-        { name: "VÀNG NHẪN 9999",   unit: "nghìn/chỉ", buy: 15220000, sell: 15540000 },
-        { name: "VÀNG TRANG SỨC 610",        unit: "nghìn/chỉ", buy: 9200000, sell: 9800000 },
-        { name: "BẠC",             unit: "nghìn/chỉ", buy: 140000,   sell: 300000   }
+         { name: "VÀNG NHẪN 980",   unit: "NGÀN/CHỈ", buy: 14860000, sell: 15160000 },
+        { name: "VÀNG NHẪN 9999",   unit: "NGÀN/CHỈ", buy: 15220000, sell: 15540000 },
+        { name: "VÀNG TRANG SỨC 610",        unit: "NGÀN/CHỈ", buy: 9200000, sell: 9800000 },
+        { name: "BẠC",             unit: "NGÀN/CHỈ", buy: 140000,   sell: 300000   }
       ],
       fetched_at: new Date()
     };
