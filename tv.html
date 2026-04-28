@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Bảng giá vàng — TV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800;900&family=Lora:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,500;1,600&&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* TV-only refresh button — góc dưới phải, ẩn nhẹ */
+    .tv-refresh {
+      position: fixed;
+      bottom: clamp(0.75rem, 1.5vw, 1.5rem);
+      right: clamp(0.75rem, 1.5vw, 1.5rem);
+      width: clamp(48px, 4vw, 72px);
+      height: clamp(48px, 4vw, 72px);
+      border-radius: 50%;
+      border: 1px solid rgba(212, 165, 116, 0.4);
+      background: rgba(212, 165, 116, 0.1);
+      color: var(--c-gold-400);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 200ms ease-out;
+      z-index: 10;
+    }
+    .tv-refresh:hover { background: rgba(212, 165, 116, 0.2); transform: rotate(90deg); }
+    .tv-refresh.is-loading svg { animation: spin 1s linear infinite; }
+    .tv-refresh svg { width: 50%; height: 50%; }
+    /* Hide refresh button after 5s of mouse-idle, show on hover */
+    body.tv-idle .tv-refresh { opacity: 0.2; }
+    body.tv-idle .tv-refresh:hover { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div id="tv-root" class="tv">
+    <header class="tv__header">
+      <div class="tv__time">
+        <div class="tv__time-ornament">◆</div>
+        <div class="value"><span class="hh">—</span><span class="colon">:</span><span class="mm">——</span><span class="tv__time-seconds"><span class="ss">——</span></span></div>
+        <div class="label">—</div>
+        <div class="tv__time-lunar">—</div>
+      </div>
+      <img class="tv__logo" src="logo-dai-tin2.png" alt="Logo Đại Tín">
+      <div class="tv__brand">
+        <div class="tv__brand-text">
+          <h1 class="tv__shop-name">HIỆU VÀNG</h1>
+          <div class="tv__brand-ornament">
+            <span class="line"></span>
+            <span class="star">◆ ◈ ◆</span>
+            <span class="line"></span>
+          </div>
+          <div class="tv__shop-tagline">Đang tải…</div>
+          <div class="tv__shop-address"></div>
+        </div>
+      </div>
+    </header>
+
+    <div class="tv__col-headers">
+      <div class="col-title">BẢNG GIÁ VÀNG</div>
+      <div class="col-pill col-pill--buy">Mua vào</div>
+      <div class="col-pill col-pill--sell">Bán ra</div>
+    </div>
+
+    <main class="tv__rows">
+      <!-- rows rendered by app.js -->
+    </main>
+
+    <footer class="tv__footer">
+      <div class="tv__footer-row">
+        <div class="updated">Đang tải…</div>
+        <div>Đơn vị: VND / chỉ</div>
+      </div>
+      <div class="tv__footer-disclaimer">
+        <span class="tv__disclaimer-inner">
+          ◆ QUÝ KHÁCH VUI LÒNG KIỂM TRA TIỀN, VÀNG TRƯỚC KHI RỜI TIỆM. TIỆM KHÔNG CHỊU TRÁCH NHIỆM SAU KHI ĐÃ HOÀN TẤT GIAO DỊCH ◆ &emsp;<span class="tv__footer-thankyou">CÁM ƠN QUÝ KHÁCH !</span>&emsp;◆ &emsp;SĐT: 0919.157.710 (HIỀN) & 0987.387.149 (THANH NỮ)&emsp;&emsp;
+          ◆ QUÝ KHÁCH VUI LÒNG KIỂM TRA TIỀN, VÀNG TRƯỚC KHI RỜI TIỆM. TIỆM KHÔNG CHỊU TRÁCH NHIỆM SAU KHI ĐÃ HOÀN TẤT GIAO DỊCH ◆ &emsp;<span class="tv__footer-thankyou">CÁM ƠN QUÝ KHÁCH !</span>&emsp;◆ &emsp;SĐT: 0919.157.710 (HIỀN) & 0987.387.149 (THANH NỮ)&emsp;&emsp;
+        </span>
+      </div>
+    </footer>
+  </div>
+
+  <button id="refresh-btn" class="tv-refresh" title="Cập nhật giá (R)" aria-label="Cập nhật giá">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12a9 9 0 1 1-3-6.7L21 8"></path>
+      <path d="M21 3v5h-5"></path>
+    </svg>
+  </button>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+  <script>
+    TiemVang.init('tv');
+
+    // ---- Âm lịch (thuật toán Ho Ngoc Duc) ----
+    const TZ = 7;
+    function _jd(d,m,y){var a=Math.floor((14-m)/12),yy=y+4800-a,mm=m+12*a-3,j=d+Math.floor((153*mm+2)/5)+365*yy+Math.floor(yy/4)-Math.floor(yy/100)+Math.floor(yy/400)-32045;return j<2299161?d+Math.floor((153*mm+2)/5)+365*yy+Math.floor(yy/4)-32083:j;}
+    function _newMoon(k){var T=k/1236.85,T2=T*T,T3=T2*T,dr=Math.PI/180,Jd=2415020.75933+29.53058868*k+0.0001178*T2-0.000000155*T3+0.00033*Math.sin((166.56+132.87*T-0.009173*T2)*dr),M=359.2242+29.10535608*k-0.0000333*T2,Mp=306.0253+385.81691806*k+0.0107306*T2,F=21.2964+390.67050646*k-0.0016528*T2,C=(0.1734-0.000393*T)*Math.sin(M*dr)+0.0021*Math.sin(2*M*dr)-0.4068*Math.sin(Mp*dr)+0.0161*Math.sin(2*Mp*dr)-0.0051*Math.sin((M+Mp)*dr)-0.0074*Math.sin((M-Mp)*dr)+0.0104*Math.sin(2*F*dr),dt=T>=-11?-0.000278+0.000265*T+0.000262*T2:0.001+0.000839*T+0.0002261*T2;return Math.floor(Jd+C-dt+0.5+TZ/24);}
+    function _sunLng(jdn){var T=(jdn-2451545.5-TZ/24)/36525,T2=T*T,dr=Math.PI/180,M=357.5291+35999.0503*T-0.0001559*T2,L0=280.46645+36000.76983*T+0.0003032*T2,DL=(1.9146-0.004817*T-0.000014*T2)*Math.sin(M*dr)+(0.019993-0.000101*T)*Math.sin(2*M*dr)+0.00029*Math.sin(3*M*dr),L=(L0+DL)*dr;L-=2*Math.PI*Math.floor(L/(2*Math.PI));return Math.floor(L/Math.PI*6);}
+    function _m11(y){var off=_jd(31,12,y)-2415021,k=Math.floor(off/29.530588853),nm=_newMoon(k);return _sunLng(nm)>=9?_newMoon(k-1):nm;}
+    function _leapOff(a11){var k=Math.floor((a11-2415021.076998695)/29.530588853+0.5),i=1,arc=_sunLng(_newMoon(k+i)),last;do{last=arc;i++;arc=_sunLng(_newMoon(k+i));}while(arc!==last&&i<14);return i-1;}
+    function solar2Lunar(d,m,y){var jd=_jd(d,m,y),k=Math.floor((jd-2415021.076998695)/29.530588853),ms=_newMoon(k+1);ms>jd&&(ms=_newMoon(k));var a11=_m11(y),b11=a11,ly;a11>=ms?(ly=y,a11=_m11(y-1)):(ly=y+1,b11=_m11(y+1));var ld=jd-ms+1,diff=Math.floor((ms-a11)/29),lm=diff+11,leap=0;b11-a11>365&&(_leapOff(a11)<=diff?(lm=diff+10,diff===_leapOff(a11)&&(leap=1)):0);lm>12&&(lm-=12);lm>=11&&diff<4&&ly--;return[ld,lm,ly,leap];}
+
+    // Tick clock mỗi giây
+    function tickClock() {
+      const now = new Date();
+      const hh    = document.querySelector('.tv__time .hh');
+      const mm    = document.querySelector('.tv__time .mm');
+      const ss    = document.querySelector('.tv__time .ss');
+      const d     = document.querySelector('.tv__time .label');
+      const lunar = document.querySelector('.tv__time .tv__time-lunar');
+      if (hh) hh.textContent = String(now.getHours()).padStart(2, '0');
+      if (mm) mm.textContent = String(now.getMinutes()).padStart(2, '0');
+      if (ss) ss.textContent = String(now.getSeconds()).padStart(2, '0');
+      if (d)  d.textContent  = now.toLocaleDateString('vi-VN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+      if (lunar) {
+        const [ld, lm, ly, leap] = solar2Lunar(now.getDate(), now.getMonth()+1, now.getFullYear());
+        lunar.textContent = `(${String(ld).padStart(2,'0')}/${lm}${leap?' nhuận':''} Âm lịch)`;
+      }
+    }
+    tickClock();
+    setInterval(tickClock, 1000);
+
+    // Phím tắt R = refresh, F = fullscreen
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'r' || e.key === 'R') document.getElementById('refresh-btn').click();
+      if (e.key === 'f' || e.key === 'F') {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else document.documentElement.requestFullscreen();
+      }
+    });
+
+    // Auto-hide refresh button khi không dùng chuột
+    let idleTimer;
+    function resetIdle() {
+      document.body.classList.remove('tv-idle');
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => document.body.classList.add('tv-idle'), 5000);
+    }
+    document.addEventListener('mousemove', resetIdle);
+    document.addEventListener('touchstart', resetIdle);
+    resetIdle();
+  </script>
+</body>
+</html>
