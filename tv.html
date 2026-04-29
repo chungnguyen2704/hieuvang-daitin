@@ -355,6 +355,11 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
     }
+
+    /* Giữ content header luôn trên fx-container (z-index: 2) */
+    .tv__logo { z-index: 3; }
+    .tv__brand { position: relative; z-index: 3; }
+    .tv__time  { z-index: 3; }
   </style>
 </head>
 <body>
