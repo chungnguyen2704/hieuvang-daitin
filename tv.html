@@ -3,48 +3,375 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Bảng giá vàng — TV</title>
+  <title>Đại Tín — Bảng Giá Vàng TV</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800;900&family=Lora:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,500;1,600&&display=swap">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800;900&family=Lora:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,500;1,600&display=swap">
+  <link id="css-live" rel="stylesheet" href="style.css"   disabled>
+  <link id="css-a"    rel="stylesheet" href="style-a.css">
+  <link id="css-c"    rel="stylesheet" href="style-c.css" disabled>
   <style>
-    /* TV-only refresh button — góc dưới phải, ẩn nhẹ */
-    .tv-refresh {
-      position: fixed;
-      bottom: clamp(0.75rem, 1.5vw, 1.5rem);
-      right: clamp(0.75rem, 1.5vw, 1.5rem);
-      width: clamp(48px, 4vw, 72px);
-      height: clamp(48px, 4vw, 72px);
-      border-radius: 50%;
-      border: 1px solid rgba(212, 165, 116, 0.4);
-      background: rgba(212, 165, 116, 0.1);
-      color: var(--c-gold-400);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 200ms ease-out;
-      z-index: 10;
+    /* ── FX container (hosts all effects) ── */
+    .tv__header { overflow: hidden; }
+    .fx-container {
+      position: absolute; inset: 0;
+      pointer-events: none; z-index: 2;
+      overflow: hidden;
     }
-    .tv-refresh:hover { background: rgba(212, 165, 116, 0.2); transform: rotate(90deg); }
+    /* Rays need flex-center for the disk */
+    .fx-rays-active { display: flex; align-items: center; justify-content: center; }
+
+    /* ═══════════════════════════════════════════
+       EFFECT: KIM SA RƠI
+    ═══════════════════════════════════════════ */
+    .kimsa-dot {
+      position: absolute; top: -4px; border-radius: 50%;
+      background: radial-gradient(circle, #FFFDE7 0%, #FFD700 55%, transparent 100%);
+      will-change: transform, opacity;
+      animation: kimsaFall var(--dur,3s) var(--del,0s) linear infinite;
+    }
+    @keyframes kimsaFall {
+      0%   { transform: translateY(0) translateX(0);                               opacity: 0; }
+      8%   { opacity: var(--op,.75); }
+      80%  { opacity: calc(var(--op,.75)*0.3); }
+      100% { transform: translateY(var(--dist,240px)) translateX(var(--drift,8px)); opacity: 0; }
+    }
+
+    /* ═══════════════════════════════════════════
+       EFFECT: ÁNH SAO LẤP LÁNH
+    ═══════════════════════════════════════════ */
+    .sparkle-outer {
+      position: absolute; will-change: opacity, transform;
+      animation: sparkleFade var(--dur,4s) var(--del,0s) ease-in-out infinite;
+    }
+    @keyframes sparkleFade {
+      0%   { opacity: 0; transform: scale(.3)  rotate(0deg);   }
+      20%  { opacity: 1; transform: scale(1.15) rotate(12deg);  }
+      50%  { opacity: .85; transform: scale(.95) rotate(0deg);  }
+      65%  { opacity: 1; transform: scale(1.08) rotate(-8deg);  }
+      100% { opacity: 0; transform: scale(.2)  rotate(45deg);  }
+    }
+    .sparkle-star {
+      background: linear-gradient(135deg,#FFFDE0 0%,#FFD700 50%,#FFEC8B 100%);
+      clip-path: polygon(50% 0%,56% 44%,100% 50%,56% 56%,50% 100%,44% 56%,0% 50%,44% 44%);
+      filter: drop-shadow(0 0 3px rgba(255,215,0,.95)) drop-shadow(0 0 9px rgba(255,180,0,.65));
+    }
+    .sparkle-star::before {
+      content:""; position:absolute; left:-60%; top:50%; width:220%; height:1.5px;
+      transform:translateY(-50%);
+      background:linear-gradient(90deg,transparent,rgba(255,215,0,.65) 50%,transparent);
+    }
+    .sparkle-star::after {
+      content:""; position:absolute; top:-60%; left:50%; width:1.5px; height:220%;
+      transform:translateX(-50%);
+      background:linear-gradient(180deg,transparent,rgba(255,215,0,.65) 50%,transparent);
+    }
+
+    /* ═══════════════════════════════════════════
+       EFFECT: TIỀN XU XOAY RƠI
+    ═══════════════════════════════════════════ */
+    .coin-outer {
+      position: absolute; top: -28px;
+      will-change: transform, opacity;
+      animation: coinFall var(--dur,3.5s) var(--del,0s) ease-in infinite;
+    }
+    @keyframes coinFall {
+      0%   { transform: translateY(0);               opacity: 0; }
+      8%   {                                           opacity: .95; }
+      85%  {                                           opacity: .55; }
+      100% { transform: translateY(var(--dist,320px)); opacity: 0; }
+    }
+    .coin-inner {
+      border-radius: 50%;
+      background:
+        radial-gradient(ellipse 60% 42% at 32% 32%, rgba(255,255,230,.85) 0%, transparent 48%),
+        radial-gradient(circle, #FFF8DC 0%,#FFD700 25%,#DAA520 55%,#8B6914 85%,#5C420A 100%);
+      border: 1.5px solid rgba(184,134,11,.65);
+      box-shadow:
+        inset -2px -2px 4px rgba(0,0,0,.4),
+        inset 1px 1px 3px rgba(255,255,200,.35),
+        0 0 10px rgba(255,215,0,.65), 0 2px 5px rgba(0,0,0,.45);
+      will-change: transform;
+      animation: coinSpin var(--spin,.75s) linear infinite;
+    }
+    @keyframes coinSpin {
+      0%  { transform: scaleX(1); }
+      24% { transform: scaleX(.06); }
+      50% { transform: scaleX(1); }
+      74% { transform: scaleX(.06); }
+      100%{ transform: scaleX(1); }
+    }
+
+    /* ═══════════════════════════════════════════
+       EFFECT: CHỮ PHÚC LỘC THỌ NỔI
+    ═══════════════════════════════════════════ */
+    .char-particle {
+      position: absolute;
+      font-family: "Noto Serif CJK TC","SimSun","MS Mincho",Georgia,serif;
+      line-height: 1; user-select: none; will-change: transform, opacity;
+      animation: charFloat var(--dur,8s) var(--del,0s) ease-out infinite;
+      color: rgba(255,215,0,var(--op,.55));
+      text-shadow: 0 0 10px rgba(255,215,0,.85), 0 0 22px rgba(255,165,0,.45);
+    }
+    @keyframes charFloat {
+      0%   { transform: translateY(0) translateX(0) rotate(var(--r0,0deg));              opacity: 0; }
+      10%  { opacity: var(--op,.55); }
+      78%  { opacity: calc(var(--op,.55)*.3); }
+      100% { transform: translateY(var(--ty,-140px)) translateX(var(--tx,8px)) rotate(var(--r1,6deg)); opacity: 0; }
+    }
+
+    /* ═══════════════════════════════════════════
+       EFFECT: BOKEH VÀNG
+    ═══════════════════════════════════════════ */
+    .bokeh-orb {
+      position: absolute; border-radius: 50%;
+      background: radial-gradient(circle,
+        rgba(255,215,0,var(--oi,.65)) 0%,
+        rgba(255,165,0,var(--om,.28)) 42%,
+        transparent 70%
+      );
+      filter: blur(var(--blur,9px)); will-change: transform, opacity;
+      animation: bokehFloat var(--dur,6s) var(--del,0s) ease-in-out infinite;
+    }
+    @keyframes bokehFloat {
+      0%   { transform: translateY(0);              opacity: 0; }
+      12%  { opacity: var(--op,.35); }
+      75%  { opacity: calc(var(--op,.35)*.5); }
+      100% { transform: translateY(var(--ty,-90px)); opacity: 0; }
+    }
+
+    /* ═══════════════════════════════════════════
+       EFFECT: SÓNG NƯỚC VÀNG
+    ═══════════════════════════════════════════ */
+    .ripple-source { position: absolute; }
+    .ripple-ring {
+      position: absolute; border-radius: 50%;
+      border: 1.5px solid rgba(255,215,0,var(--bop,.55));
+      box-shadow: 0 0 6px rgba(255,215,0,calc(var(--bop,.55)*.4));
+      left: 0; top: 0;
+      transform: translate(-50%,-50%) scale(.04);
+      animation: rippleExpand var(--dur,3.8s) var(--del,0s) ease-out infinite;
+    }
+    @keyframes rippleExpand {
+      0%   { transform: translate(-50%,-50%) scale(.04); opacity: .9; }
+      100% { transform: translate(-50%,-50%) scale(1);   opacity: 0; }
+    }
+    .ripple-dot {
+      position: absolute; width: 5px; height: 5px; border-radius: 50%;
+      background: radial-gradient(circle,rgba(255,215,0,.9),transparent);
+      transform: translate(-50%,-50%); left: 0; top: 0; filter: blur(1px);
+      animation: rippleDotPulse 2s ease-in-out infinite;
+    }
+    @keyframes rippleDotPulse {
+      0%,100% { transform: translate(-50%,-50%) scale(1); opacity: .7; }
+      50%      { transform: translate(-50%,-50%) scale(2); opacity: 1; }
+    }
+
+    /* ═══════════════════════════════════════════
+       EFFECT: HÀO QUANG TỎA SÁNG
+    ═══════════════════════════════════════════ */
+    .rays-disk {
+      position: absolute;
+      width: clamp(500px,130vw,1400px);
+      height: clamp(500px,130vw,1400px);
+      border-radius: 50%;
+      animation: raysRotate 30s linear infinite;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0deg,   rgba(255,215,0,.09) 3.5deg,  transparent 7deg,
+        transparent 15deg,  rgba(255,215,0,.06) 18.5deg, transparent 22deg,
+        transparent 29deg,  rgba(255,215,0,.10) 32.5deg, transparent 36deg,
+        transparent 43deg,  rgba(255,215,0,.05) 46.5deg, transparent 50deg,
+        transparent 57deg,  rgba(255,215,0,.08) 60.5deg, transparent 64deg,
+        transparent 71deg,  rgba(255,215,0,.06) 74.5deg, transparent 78deg,
+        transparent 85deg,  rgba(255,215,0,.09) 88.5deg, transparent 92deg,
+        transparent 99deg,  rgba(255,215,0,.05) 102.5deg,transparent 106deg,
+        transparent 113deg, rgba(255,215,0,.07) 116.5deg,transparent 120deg,
+        transparent 127deg, rgba(255,215,0,.10) 130.5deg,transparent 134deg,
+        transparent 141deg, rgba(255,215,0,.06) 144.5deg,transparent 148deg,
+        transparent 155deg, rgba(255,215,0,.08) 158.5deg,transparent 162deg,
+        transparent 169deg, rgba(255,215,0,.05) 172.5deg,transparent 176deg,
+        transparent 183deg, rgba(255,215,0,.09) 186.5deg,transparent 190deg,
+        transparent 197deg, rgba(255,215,0,.06) 200.5deg,transparent 204deg,
+        transparent 211deg, rgba(255,215,0,.10) 214.5deg,transparent 218deg,
+        transparent 225deg, rgba(255,215,0,.05) 228.5deg,transparent 232deg,
+        transparent 239deg, rgba(255,215,0,.07) 242.5deg,transparent 246deg,
+        transparent 253deg, rgba(255,215,0,.09) 256.5deg,transparent 260deg,
+        transparent 267deg, rgba(255,215,0,.06) 270.5deg,transparent 274deg,
+        transparent 281deg, rgba(255,215,0,.08) 284.5deg,transparent 288deg,
+        transparent 295deg, rgba(255,215,0,.05) 298.5deg,transparent 302deg,
+        transparent 309deg, rgba(255,215,0,.10) 312.5deg,transparent 316deg,
+        transparent 323deg, rgba(255,215,0,.06) 326.5deg,transparent 330deg,
+        transparent 337deg, rgba(255,215,0,.08) 340.5deg,transparent 344deg,
+        transparent 351deg, rgba(255,215,0,.05) 354.5deg,transparent 359deg
+      );
+    }
+    .rays-disk::before {
+      content:""; position:absolute; inset:0; border-radius:50%;
+      background: radial-gradient(circle,
+        #1A0202 0%, rgba(26,2,2,.78) 18%, transparent 50%,
+        rgba(26,2,2,.35) 75%, #1A0202 100%
+      );
+    }
+    @keyframes raysRotate { to { transform: rotate(360deg); } }
+    .rays-glow {
+      position: absolute;
+      width: clamp(60px,8vw,120px); height: clamp(60px,8vw,120px);
+      border-radius: 50%;
+      background: radial-gradient(circle,rgba(255,215,0,.4) 0%,rgba(255,160,0,.15) 45%,transparent 70%);
+      filter: blur(clamp(10px,1.5vw,20px));
+      animation: raysGlowPulse 3.5s ease-in-out infinite;
+    }
+    @keyframes raysGlowPulse {
+      0%,100% { transform: scale(1);   opacity: .6; }
+      50%      { transform: scale(1.4); opacity: 1; }
+    }
+    .rays-halo {
+      position: absolute;
+      width: clamp(110px,14vw,200px); height: clamp(110px,14vw,200px);
+      border-radius: 50%;
+      border: 1px solid rgba(255,215,0,.18);
+      box-shadow: 0 0 24px rgba(255,215,0,.12), inset 0 0 24px rgba(255,215,0,.06);
+      animation: raysHaloPulse 4s ease-in-out infinite;
+    }
+    @keyframes raysHaloPulse {
+      0%,100% { transform: scale(1);    opacity: .5; }
+      50%      { transform: scale(1.12); opacity: .9; }
+    }
+
+    /* ═══════════════════════════════════════════
+       THEME PICKER UI
+    ═══════════════════════════════════════════ */
+    .tv-theme-btn {
+      position: fixed;
+      top: clamp(.75rem,1.5vw,1.5rem);
+      left: clamp(.75rem,1.5vw,1.5rem);
+      width: clamp(48px,4vw,72px); height: clamp(48px,4vw,72px);
+      border-radius: 50%;
+      border: 1px solid rgba(255,215,0,.35);
+      background: rgba(26,2,2,.80);
+      color: rgba(255,215,0,.7);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 200ms ease-out;
+      z-index: 30;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .tv-theme-btn:hover {
+      background: rgba(80,10,10,.9);
+      border-color: rgba(255,215,0,.7);
+      color: #FFD700;
+      transform: rotate(40deg);
+    }
+    .tv-theme-btn svg { width: 48%; height: 48%; }
+
+    .tv-theme-panel {
+      position: fixed;
+      top: calc(clamp(.75rem,1.5vw,1.5rem) + clamp(48px,4vw,72px) + 12px);
+      left: clamp(.75rem,1.5vw,1.5rem);
+      background: rgba(14,1,1,.93);
+      border: 1px solid rgba(255,215,0,.32);
+      border-radius: 16px;
+      padding: 16px 18px 14px;
+      z-index: 30;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      min-width: 280px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.7), 0 0 0 1px rgba(255,215,0,.08);
+      animation: panelUp 180ms cubic-bezier(.16,1,.3,1);
+    }
+    .tv-theme-panel[hidden] { display: none; }
+    @keyframes panelUp {
+      from { transform: translateY(8px); opacity: 0; }
+      to   { transform: translateY(0);   opacity: 1; }
+    }
+
+    .tv-theme-panel__title {
+      font-size: .68rem; letter-spacing: .22em; text-transform: uppercase;
+      color: rgba(255,215,0,.45); margin-bottom: 8px;
+      font-family: "Be Vietnam Pro", sans-serif; font-weight: 600;
+    }
+    .tv-theme-panel__title + .tv-theme-panel__title {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,215,0,.10);
+    }
+    .tv-theme-panel__row {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;
+      margin-bottom: 2px;
+    }
+    .tv-theme-panel__grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+    }
+    .theme-opt {
+      padding: 8px 11px; border-radius: 9px;
+      border: 1px solid rgba(255,215,0,.18);
+      background: rgba(255,255,255,.03);
+      color: rgba(248,232,196,.65);
+      font-family: "Be Vietnam Pro", sans-serif;
+      font-size: .76rem; font-weight: 600;
+      cursor: pointer; transition: all 140ms ease-out;
+      text-align: left; line-height: 1.25;
+    }
+    .theme-opt:hover {
+      border-color: rgba(255,215,0,.48);
+      background: rgba(255,215,0,.08);
+      color: #FFD700;
+    }
+    .theme-opt.is-active {
+      border-color: #FFD700;
+      background: rgba(255,215,0,.14);
+      color: #FFD700;
+      box-shadow: 0 0 14px rgba(255,215,0,.18);
+    }
+    .theme-opt__note {
+      font-size: .62rem; opacity: .5; font-weight: 400; margin-top: 2px;
+    }
+    .tv-theme-panel__hint {
+      font-size: .62rem; color: rgba(255,215,0,.28); text-align: center;
+      margin-top: 11px; letter-spacing: .06em;
+    }
+
+    /* hide picker in idle mode */
+    body.tv-idle .tv-theme-btn  { opacity: .15; }
+    body.tv-idle .tv-theme-btn:hover { opacity: 1; }
+
+    /* TV refresh (keep existing) */
+    .tv-refresh {
+      position: fixed; bottom: clamp(.75rem,1.5vw,1.5rem); right: clamp(.75rem,1.5vw,1.5rem);
+      width: clamp(48px,4vw,72px); height: clamp(48px,4vw,72px); border-radius: 50%;
+      border: 1px solid rgba(220,38,38,.4); background: rgba(185,28,28,.12); color: #FB7185;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 200ms ease-out; z-index: 10;
+    }
+    .tv-refresh:hover { background: rgba(185,28,28,.25); transform: rotate(90deg); }
     .tv-refresh.is-loading svg { animation: spin 1s linear infinite; }
     .tv-refresh svg { width: 50%; height: 50%; }
-    /* Hide refresh button after 5s of mouse-idle, show on hover */
-    body.tv-idle .tv-refresh { opacity: 0.2; }
+    body.tv-idle .tv-refresh { opacity: .2; }
     body.tv-idle .tv-refresh:hover { opacity: 1; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
   </style>
 </head>
 <body>
   <div id="tv-root" class="tv">
     <header class="tv__header">
+
+      <!-- ═══ EFFECT LAYER — controlled by JS ═══ -->
+      <div id="fx-container" class="fx-container"></div>
+
+      <!-- ═══ Header content ═══ -->
       <div class="tv__time">
         <div class="tv__time-ornament">◆</div>
         <div class="value"><span class="hh">—</span><span class="colon">:</span><span class="mm">——</span><span class="tv__time-seconds"><span class="ss">——</span></span></div>
         <div class="label">—</div>
         <div class="tv__time-lunar">—</div>
       </div>
-      <img class="tv__logo" src="logo-dai-tin2.png" alt="Logo Đại Tín">
+      <img class="tv__logo" src="logo-dai-tin3.png" alt="Logo Đại Tín">
       <div class="tv__brand">
         <div class="tv__brand-text">
           <h1 class="tv__shop-name">HIỆU VÀNG</h1>
@@ -65,9 +392,7 @@
       <div class="col-pill col-pill--sell">Bán ra</div>
     </div>
 
-    <main class="tv__rows">
-      <!-- rows rendered by app.js -->
-    </main>
+    <main class="tv__rows"></main>
 
     <footer class="tv__footer">
       <div class="tv__footer-row">
@@ -76,13 +401,14 @@
       </div>
       <div class="tv__footer-disclaimer">
         <span class="tv__disclaimer-inner">
-          ◆ QUÝ KHÁCH VUI LÒNG KIỂM TRA TIỀN, VÀNG TRƯỚC KHI RỜI TIỆM. TIỆM KHÔNG CHỊU TRÁCH NHIỆM SAU KHI ĐÃ HOÀN TẤT GIAO DỊCH ◆ &emsp;<span class="tv__footer-thankyou">CÁM ƠN QUÝ KHÁCH !</span>&emsp;◆ &emsp;SĐT: 0919.157.710 (HIỀN) & 0987.387.149 (THANH NỮ)&emsp;&emsp;
-          ◆ QUÝ KHÁCH VUI LÒNG KIỂM TRA TIỀN, VÀNG TRƯỚC KHI RỜI TIỆM. TIỆM KHÔNG CHỊU TRÁCH NHIỆM SAU KHI ĐÃ HOÀN TẤT GIAO DỊCH ◆ &emsp;<span class="tv__footer-thankyou">CÁM ƠN QUÝ KHÁCH !</span>&emsp;◆ &emsp;SĐT: 0919.157.710 (HIỀN) & 0987.387.149 (THANH NỮ)&emsp;&emsp;
+          ◆ QUÝ KHÁCH VUI LÒNG KIỂM TRA TIỀN, VÀNG TRƯỚC KHI RỜI TIỆM. TIỆM KHÔNG CHỊU TRÁCH NHIỆM SAU KHI ĐÃ HOÀN TẤT GIAO DỊCH ◆ &emsp;<span class="tv__footer-thankyou">CÁM ƠN QUÝ KHÁCH !</span>&emsp;◆ &emsp;SĐT: 0919.157.710 (HIỀN) &amp; 0987.387.149 (THANH NỮ)&emsp;&emsp;
+          ◆ QUÝ KHÁCH VUI LÒNG KIỂM TRA TIỀN, VÀNG TRƯỚC KHI RỜI TIỆM. TIỆM KHÔNG CHỊU TRÁCH NHIỆM SAU KHI ĐÃ HOÀN TẤT GIAO DỊCH ◆ &emsp;<span class="tv__footer-thankyou">CÁM ƠN QUÝ KHÁCH !</span>&emsp;◆ &emsp;SĐT: 0919.157.710 (HIỀN) &amp; 0987.387.149 (THANH NỮ)&emsp;&emsp;
         </span>
       </div>
     </footer>
   </div>
 
+  <!-- Refresh button -->
   <button id="refresh-btn" class="tv-refresh" title="Cập nhật giá (R)" aria-label="Cập nhật giá">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 12a9 9 0 1 1-3-6.7L21 8"></path>
@@ -90,12 +416,293 @@
     </svg>
   </button>
 
+  <!-- Theme picker button -->
+  <button id="theme-btn" class="tv-theme-btn" title="Đổi hiệu ứng (T)" aria-label="Đổi hiệu ứng">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+    </svg>
+  </button>
+
+  <!-- Theme picker panel -->
+  <div id="theme-panel" class="tv-theme-panel" hidden aria-label="Chọn hiệu ứng">
+    <div class="tv-theme-panel__title">THIẾT KẾ</div>
+    <div class="tv-theme-panel__row" id="design-grid"></div>
+    <div class="tv-theme-panel__title">HIỆU ỨNG HEADER</div>
+    <div class="tv-theme-panel__grid" id="theme-grid"></div>
+    <div class="tv-theme-panel__hint">Phím T mở/đóng · 1–7 chọn nhanh · ← → chuyển</div>
+  </div>
+
   <script src="config.js"></script>
   <script src="app.js"></script>
   <script>
     TiemVang.init('tv');
 
-    // ---- Âm lịch (thuật toán Ho Ngoc Duc) ----
+    /* ═══════════════════════════════════════════════════════════
+       THEME SYSTEM
+    ═══════════════════════════════════════════════════════════ */
+    const THEMES = [
+      { key: 'kimsa',   name: 'Kim Sa Rơi',        note: 'Hạt vàng rơi hai bên' },
+      { key: 'sparkle', name: 'Ánh Sao Lấp Lánh',  note: 'Kim cương bắt sáng'   },
+      { key: 'coins',   name: 'Tiền Xu Xoay Rơi',  note: 'Xu vàng xoay 3D'     },
+      { key: 'chars',   name: 'Chữ Phúc Lộc Thọ',  note: '福壽財祿 nổi lên'     },
+      { key: 'bokeh',   name: 'Bokeh Vàng',         note: 'Ánh sáng mờ nhòe'    },
+      { key: 'ripple',  name: 'Sóng Nước Vàng',     note: 'Vòng sóng lan tỏa'   },
+      { key: 'rays',    name: 'Hào Quang',           note: 'Tia sáng từ trung tâm'},
+    ];
+
+    /* ── Spawners ── */
+    function spawnKimSa(c) {
+      const h = c.offsetHeight || 180;
+      for (let i = 0; i < 70; i++) {
+        const el = document.createElement('div');
+        el.className = 'kimsa-dot';
+        const size = 1 + Math.random() * 2.4;
+        const r = Math.random();
+        const left = r < .4 ? Math.random() * 25
+                   : r < .8 ? 75 + Math.random() * 25
+                   : 25 + Math.random() * 50;
+        el.style.cssText = [
+          `width:${size.toFixed(1)}px`, `height:${size.toFixed(1)}px`,
+          `left:${left.toFixed(1)}%`,
+          `--dur:${(2.2+Math.random()*3).toFixed(2)}s`,
+          `--del:${(Math.random()*5).toFixed(2)}s`,
+          `--op:${(.45+Math.random()*.55).toFixed(2)}`,
+          `--dist:${(h+40)|0}px`,
+          `--drift:${((Math.random()-.5)*18).toFixed(1)}px`,
+        ].join(';');
+        c.appendChild(el);
+      }
+    }
+
+    function spawnSparkle(c) {
+      for (let i = 0; i < 28; i++) {
+        const outer = document.createElement('div');
+        outer.className = 'sparkle-outer';
+        const size = 6 + Math.random() * 18;
+        outer.style.cssText = [
+          `left:${(2+Math.random()*96).toFixed(1)}%`,
+          `top:${(5+Math.random()*88).toFixed(1)}%`,
+          `--dur:${(3+Math.random()*6).toFixed(2)}s`,
+          `--del:${(Math.random()*12).toFixed(2)}s`,
+        ].join(';');
+        const star = document.createElement('div');
+        star.className = 'sparkle-star';
+        star.style.cssText = `width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;`;
+        outer.appendChild(star);
+        c.appendChild(outer);
+      }
+    }
+
+    function spawnCoins(c) {
+      const h = c.offsetHeight || 180;
+      for (let i = 0; i < 16; i++) {
+        const outer = document.createElement('div');
+        outer.className = 'coin-outer';
+        const size = 12 + Math.random() * 14;
+        outer.style.cssText = [
+          `left:${(2+Math.random()*96).toFixed(1)}%`,
+          `--dur:${(2.2+Math.random()*2.8).toFixed(2)}s`,
+          `--del:${(Math.random()*5).toFixed(2)}s`,
+          `--dist:${h+40}px`,
+        ].join(';');
+        const inner = document.createElement('div');
+        inner.className = 'coin-inner';
+        inner.style.cssText = `width:${size|0}px;height:${size|0}px;--spin:${(.45+Math.random()*.65).toFixed(2)}s;`;
+        outer.appendChild(inner);
+        c.appendChild(outer);
+      }
+    }
+
+    function spawnChars(c) {
+      const pool = ['福','壽','財','祿','吉','金','福','財','吉','壽'];
+      for (let i = 0; i < 20; i++) {
+        const el = document.createElement('div');
+        el.className = 'char-particle';
+        el.textContent = pool[i % pool.length];
+        const size = 14 + Math.random() * 26;
+        el.style.cssText = [
+          `font-size:${size|0}px`,
+          `left:${(2+Math.random()*96).toFixed(1)}%`,
+          `bottom:${(-5+Math.random()*25).toFixed(1)}%`,
+          `--dur:${(6+Math.random()*8).toFixed(2)}s`,
+          `--del:${(Math.random()*10).toFixed(2)}s`,
+          `--op:${(.35+Math.random()*.45).toFixed(2)}`,
+          `--ty:${(-(80+Math.random()*120))|0}px`,
+          `--tx:${((Math.random()-.5)*30).toFixed(1)}px`,
+          `--r0:${((Math.random()-.5)*10).toFixed(1)}deg`,
+          `--r1:${((Math.random()-.5)*14).toFixed(1)}deg`,
+        ].join(';');
+        c.appendChild(el);
+      }
+    }
+
+    function spawnBokeh(c) {
+      for (let i = 0; i < 26; i++) {
+        const el = document.createElement('div');
+        el.className = 'bokeh-orb';
+        const size = 10 + Math.random() * 72;
+        el.style.cssText = [
+          `width:${size|0}px`, `height:${size|0}px`,
+          `left:${(Math.random()*100).toFixed(1)}%`,
+          `top:${(15+Math.random()*80).toFixed(1)}%`,
+          `--dur:${(5+Math.random()*7).toFixed(2)}s`,
+          `--del:${(Math.random()*10).toFixed(2)}s`,
+          `--op:${(.12+Math.random()*.32).toFixed(2)}`,
+          `--blur:${(5+Math.random()*18).toFixed(1)}px`,
+          `--ty:${(-(50+Math.random()*90))|0}px`,
+          `--oi:${(.45+Math.random()*.45).toFixed(2)}`,
+          `--om:${(.10+Math.random()*.22).toFixed(2)}`,
+        ].join(';');
+        c.appendChild(el);
+      }
+    }
+
+    function spawnRipple(c) {
+      [
+        { l:18, b:22, max:200, dur:4.0 },
+        { l:50, b:12, max:280, dur:4.6 },
+        { l:82, b:22, max:200, dur:3.8 },
+      ].forEach(src => {
+        const srcEl = document.createElement('div');
+        srcEl.className = 'ripple-source';
+        srcEl.style.cssText = `left:${src.l}%;bottom:${src.b}%;`;
+        const dot = document.createElement('div');
+        dot.className = 'ripple-dot';
+        srcEl.appendChild(dot);
+        for (let i = 0; i < 4; i++) {
+          const ring = document.createElement('div');
+          ring.className = 'ripple-ring';
+          ring.style.cssText = [
+            `width:${src.max}px`, `height:${src.max}px`,
+            `--dur:${src.dur.toFixed(2)}s`,
+            `--del:${(i*src.dur/4).toFixed(2)}s`,
+            `--bop:${Math.max(.08,.55-i*.10).toFixed(2)}`,
+          ].join(';');
+          srcEl.appendChild(ring);
+        }
+        c.appendChild(srcEl);
+      });
+    }
+
+    function spawnRays(c) {
+      c.classList.add('fx-rays-active');
+      ['rays-disk','rays-halo','rays-glow'].forEach(cls => {
+        const el = document.createElement('div');
+        el.className = cls;
+        c.appendChild(el);
+      });
+    }
+
+    const SPAWNERS = {
+      kimsa: spawnKimSa, sparkle: spawnSparkle, coins: spawnCoins,
+      chars: spawnChars, bokeh: spawnBokeh, ripple: spawnRipple, rays: spawnRays,
+    };
+
+    /* ── Apply theme ── */
+    let activeTheme = localStorage.getItem('tv-theme') || 'kimsa';
+
+    function applyTheme(key) {
+      const c = document.getElementById('fx-container');
+      c.innerHTML = '';
+      c.className = 'fx-container';
+      SPAWNERS[key]?.(c);
+      activeTheme = key;
+      localStorage.setItem('tv-theme', key);
+      document.querySelectorAll('.theme-opt').forEach(btn =>
+        btn.classList.toggle('is-active', btn.dataset.key === key)
+      );
+    }
+
+    /* ── Design themes (CSS swap) ── */
+    const DESIGNS = [
+      { key: 'a',    cssId: 'css-a',    name: 'Đỏ Vàng',   note: 'Phú Quý Đỏ'    },
+      { key: 'live', cssId: 'css-live', name: 'WOW',        note: 'Live / Original' },
+      { key: 'c',    cssId: 'css-c',    name: 'Ngọc Bích',  note: 'Xanh ngọc'     },
+    ];
+    let activeDesign = localStorage.getItem('tv-design') || 'a';
+
+    function switchDesign(key) {
+      DESIGNS.forEach(d => { document.getElementById(d.cssId).disabled = (d.key !== key); });
+      activeDesign = key;
+      localStorage.setItem('tv-design', key);
+      document.querySelectorAll('.design-opt').forEach(b => b.classList.toggle('is-active', b.dataset.key === key));
+    }
+
+    const designGrid = document.getElementById('design-grid');
+    DESIGNS.forEach(({ key, name, note }) => {
+      const btn = document.createElement('button');
+      btn.className = 'theme-opt design-opt';
+      btn.dataset.key = key;
+      btn.innerHTML = `<div>${name}</div><div class="theme-opt__note">${note}</div>`;
+      btn.addEventListener('click', () => { switchDesign(key); resetAutoClose(); });
+      designGrid.appendChild(btn);
+    });
+    switchDesign(activeDesign);
+
+    /* ── Build panel buttons ── */
+    const grid = document.getElementById('theme-grid');
+    THEMES.forEach(({ key, name, note }, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'theme-opt';
+      btn.dataset.key = key;
+      btn.innerHTML = `<div>${idx+1}. ${name}</div><div class="theme-opt__note">${note}</div>`;
+      btn.addEventListener('click', () => {
+        applyTheme(key);
+        clearTimeout(autoClose);
+        autoClose = setTimeout(closePanel, 1800);
+      });
+      grid.appendChild(btn);
+    });
+
+    /* ── Panel open / close ── */
+    let autoClose;
+    const panel = document.getElementById('theme-panel');
+
+    function openPanel() {
+      panel.hidden = false;
+      clearTimeout(autoClose);
+      autoClose = setTimeout(closePanel, 8000);
+    }
+    function closePanel() {
+      panel.hidden = true;
+      clearTimeout(autoClose);
+    }
+    function togglePanel() { panel.hidden ? openPanel() : closePanel(); }
+
+    document.getElementById('theme-btn').addEventListener('click', togglePanel);
+
+    /* ── Keyboard ── */
+    document.addEventListener('keydown', e => {
+      if (e.key === 'r' || e.key === 'R') { document.getElementById('refresh-btn').click(); return; }
+      if (e.key === 'f' || e.key === 'F') {
+        document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+        return;
+      }
+      if (e.key === 't' || e.key === 'T') { togglePanel(); return; }
+
+      const num = parseInt(e.key);
+      if (num >= 1 && num <= THEMES.length) { applyTheme(THEMES[num-1].key); return; }
+
+      if (!panel.hidden) {
+        const idx = THEMES.findIndex(t => t.key === activeTheme);
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          applyTheme(THEMES[(idx - 1 + THEMES.length) % THEMES.length].key);
+          resetAutoClose();
+        }
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          applyTheme(THEMES[(idx + 1) % THEMES.length].key);
+          resetAutoClose();
+        }
+      }
+    });
+
+    function resetAutoClose() {
+      clearTimeout(autoClose);
+      autoClose = setTimeout(closePanel, 8000);
+    }
+
+    /* ── Clock + Lunar ── */
     const TZ = 7;
     function _jd(d,m,y){var a=Math.floor((14-m)/12),yy=y+4800-a,mm=m+12*a-3,j=d+Math.floor((153*mm+2)/5)+365*yy+Math.floor(yy/4)-Math.floor(yy/100)+Math.floor(yy/400)-32045;return j<2299161?d+Math.floor((153*mm+2)/5)+365*yy+Math.floor(yy/4)-32083:j;}
     function _newMoon(k){var T=k/1236.85,T2=T*T,T3=T2*T,dr=Math.PI/180,Jd=2415020.75933+29.53058868*k+0.0001178*T2-0.000000155*T3+0.00033*Math.sin((166.56+132.87*T-0.009173*T2)*dr),M=359.2242+29.10535608*k-0.0000333*T2,Mp=306.0253+385.81691806*k+0.0107306*T2,F=21.2964+390.67050646*k-0.0016528*T2,C=(0.1734-0.000393*T)*Math.sin(M*dr)+0.0021*Math.sin(2*M*dr)-0.4068*Math.sin(Mp*dr)+0.0161*Math.sin(2*Mp*dr)-0.0051*Math.sin((M+Mp)*dr)-0.0074*Math.sin((M-Mp)*dr)+0.0104*Math.sin(2*F*dr),dt=T>=-11?-0.000278+0.000265*T+0.000262*T2:0.001+0.000839*T+0.0002261*T2;return Math.floor(Jd+C-dt+0.5+TZ/24);}
@@ -103,46 +710,28 @@
     function _m11(y){var off=_jd(31,12,y)-2415021,k=Math.floor(off/29.530588853),nm=_newMoon(k);return _sunLng(nm)>=9?_newMoon(k-1):nm;}
     function _leapOff(a11){var k=Math.floor((a11-2415021.076998695)/29.530588853+0.5),i=1,arc=_sunLng(_newMoon(k+i)),last;do{last=arc;i++;arc=_sunLng(_newMoon(k+i));}while(arc!==last&&i<14);return i-1;}
     function solar2Lunar(d,m,y){var jd=_jd(d,m,y),k=Math.floor((jd-2415021.076998695)/29.530588853),ms=_newMoon(k+1);ms>jd&&(ms=_newMoon(k));var a11=_m11(y),b11=a11,ly;a11>=ms?(ly=y,a11=_m11(y-1)):(ly=y+1,b11=_m11(y+1));var ld=jd-ms+1,diff=Math.floor((ms-a11)/29),lm=diff+11,leap=0;b11-a11>365&&(_leapOff(a11)<=diff?(lm=diff+10,diff===_leapOff(a11)&&(leap=1)):0);lm>12&&(lm-=12);lm>=11&&diff<4&&ly--;return[ld,lm,ly,leap];}
-
-    // Tick clock mỗi giây
-    function tickClock() {
-      const now = new Date();
-      const hh    = document.querySelector('.tv__time .hh');
-      const mm    = document.querySelector('.tv__time .mm');
-      const ss    = document.querySelector('.tv__time .ss');
-      const d     = document.querySelector('.tv__time .label');
-      const lunar = document.querySelector('.tv__time .tv__time-lunar');
-      if (hh) hh.textContent = String(now.getHours()).padStart(2, '0');
-      if (mm) mm.textContent = String(now.getMinutes()).padStart(2, '0');
-      if (ss) ss.textContent = String(now.getSeconds()).padStart(2, '0');
-      if (d)  d.textContent  = now.toLocaleDateString('vi-VN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
-      if (lunar) {
-        const [ld, lm, ly, leap] = solar2Lunar(now.getDate(), now.getMonth()+1, now.getFullYear());
-        lunar.textContent = `(${String(ld).padStart(2,'0')}/${lm}${leap?' nhuận':''} Âm lịch)`;
-      }
+    function tickClock(){
+      const now=new Date();
+      const q=s=>document.querySelector(s);
+      const hh=q('.tv__time .hh'),mm=q('.tv__time .mm'),ss=q('.tv__time .ss');
+      const d=q('.tv__time .label'),lunar=q('.tv__time .tv__time-lunar');
+      if(hh) hh.textContent=String(now.getHours()).padStart(2,'0');
+      if(mm) mm.textContent=String(now.getMinutes()).padStart(2,'0');
+      if(ss) ss.textContent=String(now.getSeconds()).padStart(2,'0');
+      if(d)  d.textContent=now.toLocaleDateString('vi-VN',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'});
+      if(lunar){const[ld,lm,,leap]=solar2Lunar(now.getDate(),now.getMonth()+1,now.getFullYear());lunar.textContent=`(${String(ld).padStart(2,'0')}/${lm}${leap?' nhuận':''} Âm lịch)`;}
     }
-    tickClock();
-    setInterval(tickClock, 1000);
+    tickClock(); setInterval(tickClock, 1000);
 
-    // Phím tắt R = refresh, F = fullscreen
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'r' || e.key === 'R') document.getElementById('refresh-btn').click();
-      if (e.key === 'f' || e.key === 'F') {
-        if (document.fullscreenElement) document.exitFullscreen();
-        else document.documentElement.requestFullscreen();
-      }
-    });
-
-    // Auto-hide refresh button khi không dùng chuột
+    /* ── Idle detection ── */
     let idleTimer;
-    function resetIdle() {
-      document.body.classList.remove('tv-idle');
-      clearTimeout(idleTimer);
-      idleTimer = setTimeout(() => document.body.classList.add('tv-idle'), 5000);
-    }
-    document.addEventListener('mousemove', resetIdle);
-    document.addEventListener('touchstart', resetIdle);
+    function resetIdle(){document.body.classList.remove('tv-idle');clearTimeout(idleTimer);idleTimer=setTimeout(()=>document.body.classList.add('tv-idle'),5000);}
+    document.addEventListener('mousemove',resetIdle);
+    document.addEventListener('touchstart',resetIdle);
     resetIdle();
+
+    /* ── Init theme on load ── */
+    applyTheme(activeTheme);
   </script>
 </body>
 </html>
