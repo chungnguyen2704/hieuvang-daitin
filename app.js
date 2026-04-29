@@ -314,7 +314,12 @@
       if (opts.toast !== false) showToast('Đã cập nhật giá mới');
     } catch (err) {
       console.error(err);
-      showToast(err.message || 'Lỗi tải dữ liệu', 'error');
+      showToast('⚠ Không kết nối được — hiển thị dữ liệu mẫu', 'error');
+      if (!_last) {
+        const fallback = demoData();
+        if (view === 'tv') renderTV(fallback, null);
+        else renderPublic(fallback);
+      }
     } finally {
       _refreshing = false;
       if (btn) btn.classList.remove('is-loading');
