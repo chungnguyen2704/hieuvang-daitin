@@ -2,7 +2,7 @@
 
 ## Dự án là gì
 
-Static web app hiển thị bảng giá vàng cho **DNTN Hiệu Vàng Đại Tín** (302–304 Lê Duẩn, An Nhơn, Gia Lai). Không có backend — dữ liệu giá lấy từ Google Sheet qua GViz CSV API, render thẳng trên browser.
+Static web app hiển thị bảng giá vàng cho **DNTN Hiệu Vàng Đại Tín** (302–304 Lê Duẩn, An Nhơn, Gia Lai). Không có backend — dữ liệu giá lấy từ Google Sheet qua GViz CSV API, render thẳng trên browser. Deploy trên **GitHub Pages**: https://chungnguyen2704.github.io/hieuvang-daitin/
 
 ## Cấu trúc file
 
@@ -68,9 +68,25 @@ Google Sheet (tab Prices + Config)
 
 ## Google Sheet schema
 
-**Tab `Config`**: cột `key` | `value` — các key: `shop_name`, `tagline`, `address`
+**Tab `Config`**: cột `key` | `value`
+
+| key | value |
+|---|---|
+| `shop_name` | HIỆU VÀNG ĐẠI TÍN |
+| `tagline` | Vàng bạc đá quý — Trang sức phong thuỷ |
+| `address` | 304 Lê Duẩn, An Nhơn, Gia Lai |
 
 **Tab `Prices`**: cột `name` | `unit` | `buy` | `sell` — bỏ qua dòng có buy/sell trống
+
+| name | unit | buy | sell |
+|---|---|---|---|
+| Vàng nhẫn 99% | đồng/chỉ | 7850000 | 7950000 |
+| Vàng miếng SJC | đồng/chỉ | 8050000 | 8150000 |
+| Bạc | đồng/chỉ | 80000 | 90000 |
+
+Nhập số nguyên VNĐ (không dấu chấm) — hệ thống tự format. Để trống `buy`/`sell` → ẩn dòng đó.
+
+**Bắt buộc**: Share Sheet → `Anyone with the link` → Viewer (web không đọc được nếu để Restricted).
 
 ## Keyboard shortcuts (TV view)
 
@@ -88,9 +104,25 @@ Match theo keyword trong tên sản phẩm (bỏ dấu):
 - `bac`, `silver` → coin/ingot icon
 - `18k`, `14k`, `da quy`, `kim cuong` → gem icon
 
-## Git branches
+## Setup (lần đầu)
 
-- `master` — production (branch duy nhất, không còn `new-ui`)
+1. Tạo Google Sheet với 2 tab `Config` và `Prices` theo schema trên
+2. Share `Anyone with the link → Viewer`
+3. Copy Sheet ID từ URL (`/d/ID_HERE/edit`) → dán vào `config.js`
+4. Push lên GitHub → GitHub Pages tự deploy sau ~1 phút
+5. TV: mở `https://chungnguyen2704.github.io/hieuvang-daitin/tv.html` → nhấn `F` để fullscreen
+
+## Cập nhật giá hằng ngày
+
+1. Mở Google Sheets trên điện thoại → tab `Prices`
+2. Sửa số cột `buy` / `sell` (tự động lưu)
+3. TV tự refresh sau 30 giây, hoặc nhấn `R` để refresh ngay
+
+## Git & Deploy
+
+- `master` — production (branch duy nhất)
+- Push lên GitHub → GitHub Pages build sau ~1 phút
+- URL production: https://chungnguyen2704.github.io/hieuvang-daitin/
 
 ## Lưu ý khi sửa
 
@@ -100,3 +132,5 @@ Match theo keyword trong tên sản phẩm (bỏ dấu):
 - `app.js` là IIFE, không dùng module/bundler
 - `tv.html` là self-contained — tất cả logic JS inline ở cuối file
 - Design themes được swap bằng cách enable/disable `<link disabled>` — không reload trang
+- Gradient `tv__shop-name` và `col-title` dùng pure gold (không lẫn accent color của theme)
+- Luôn cập nhật file này trước khi push lên GitHub
