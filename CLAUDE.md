@@ -27,7 +27,9 @@ Static web app hiển thị bảng giá vàng cho **DNTN Hiệu Vàng Đại Tí
 
 `tv.html` tự động chọn design theo ngày trong tuần (Sun=a, Mon=live, Tue=c, Wed=d, Thu=e, Fri=f, Sat=g). Người dùng có thể override thủ công qua panel, reset vào ngày hôm sau.
 
-### FX Effects (header animations trong `tv.html`)
+### FX Effects (trong `tv.html`)
+
+7 hiệu ứng header (tự động đổi mỗi giờ theo thứ tự):
 
 | Key | Tên | Mô tả |
 |---|---|---|
@@ -38,6 +40,17 @@ Static web app hiển thị bảng giá vàng cho **DNTN Hiệu Vàng Đại Tí
 | `bokeh` | Bokeh Vàng | Ánh sáng mờ nhòe |
 | `ripple` | Sóng Nước Vàng | Vòng sóng lan tỏa |
 | `rays` | Hào Quang | Tia sáng từ trung tâm |
+
+2 hiệu ứng logo (chỉ chọn thủ công, không auto-rotate):
+
+| Key | Tên | Mô tả |
+|---|---|---|
+| `logoWm` | Logo Watermark | Logo Đại Tín mờ phủ toàn trang (background layer) |
+| `logoFloat` | Logo Thăng Hoa | Logo nhỏ drift lên như hạt vàng |
+
+**Auto-rotate**: 7 header effects tự đổi mỗi giờ tròn (`hourIndex % 7`). Khi user chọn thủ công, giữ nguyên đến giờ kế tiếp rồi reset.
+
+**Pool tách biệt**: `FX_AUTO_KEYS` (7 header effects) dùng cho auto-rotate; `FX_KEYS` (9 effects) dùng cho panel/keyboard.
 
 ## Data flow
 
@@ -64,7 +77,7 @@ Google Sheet (tab Prices + Config)
 - `R` → Refresh ngay
 - `F` → Toggle fullscreen
 - `T` → Mở/đóng panel chọn FX/design
-- `1–7` → Chọn nhanh FX effect
+- `1–9` → Chọn nhanh FX effect (1–7 header, 8=logoWm, 9=logoFloat)
 - `← →` → Chuyển FX khi panel mở
 
 ## Icon logic (app.js: getProductIcon)
