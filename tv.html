@@ -10,6 +10,10 @@
   <link id="css-live" rel="stylesheet" href="style.css"   disabled>
   <link id="css-a"    rel="stylesheet" href="style-a.css">
   <link id="css-c"    rel="stylesheet" href="style-c.css" disabled>
+  <link id="css-d"    rel="stylesheet" href="style-d.css" disabled>
+  <link id="css-e"    rel="stylesheet" href="style-e.css" disabled>
+  <link id="css-f"    rel="stylesheet" href="style-f.css" disabled>
+  <link id="css-g"    rel="stylesheet" href="style-g.css" disabled>
   <style>
     /* ── FX container (hosts all effects) ── */
     .tv__header { overflow: hidden; }
@@ -240,6 +244,54 @@
     }
 
     /* ═══════════════════════════════════════════
+       EFFECT: LOGO WATERMARK — full-page background layer
+    ═══════════════════════════════════════════ */
+    .logo-bg-layer {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
+    }
+    #tv-root { position: relative; }
+    /* Ensure content rows sit above logo-bg layer */
+    .tv__col-headers, .tv__rows, .tv__footer { position: relative; z-index: 1; }
+
+    .logo-wm-center {
+      position: absolute; top: var(--wm-top,50%); left: 50%;
+      transform: translate(-50%, -50%);
+      width: clamp(110px, 20vw, 240px);
+      filter: sepia(1) saturate(3) hue-rotate(-5deg) brightness(1.3);
+      opacity: .05; pointer-events: none;
+      animation: logoWmPulse 6s ease-in-out infinite;
+    }
+    @keyframes logoWmPulse {
+      0%,100% { opacity:.05; transform:translate(-50%,-50%) scale(1); }
+      50%      { opacity:.08; transform:translate(-50%,-50%) scale(1.04); }
+    }
+    .logo-wm-corner {
+      position: absolute;
+      filter: sepia(1) saturate(2.5) hue-rotate(-5deg) brightness(1.1);
+      opacity: var(--op,.02); pointer-events: none;
+      animation: logoWmCorner var(--dur,7s) var(--del,0s) ease-in-out infinite;
+    }
+    @keyframes logoWmCorner {
+      0%,100% { opacity:var(--op,.02); transform:scale(1); }
+      50%      { opacity:calc(var(--op,.02)*2.5); transform:scale(1.08); }
+    }
+
+    /* ═══════════════════════════════════════════
+       EFFECT: LOGO FLOAT
+    ═══════════════════════════════════════════ */
+    .logo-float-item {
+      position: absolute; pointer-events: none; will-change: transform, opacity;
+      filter: sepia(1) saturate(2.5) hue-rotate(-5deg) brightness(1.2);
+      animation: logoFloatUp var(--dur,10s) var(--del,0s) ease-out infinite;
+    }
+    @keyframes logoFloatUp {
+      0%   { transform:translateY(0) rotate(var(--r0,0deg));              opacity:0; }
+      10%  { opacity:var(--op,.08); }
+      80%  { opacity:calc(var(--op,.08)*.35); }
+      100% { transform:translateY(var(--ty,-180px)) rotate(var(--r1,8deg)); opacity:0; }
+    }
+
+    /* ═══════════════════════════════════════════
        THEME PICKER UI
     ═══════════════════════════════════════════ */
     .tv-theme-btn {
@@ -277,7 +329,7 @@
       z-index: 30;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      min-width: 280px;
+      min-width: 360px;
       box-shadow: 0 12px 40px rgba(0,0,0,.7), 0 0 0 1px rgba(255,215,0,.08);
       animation: panelUp 180ms cubic-bezier(.16,1,.3,1);
     }
@@ -298,7 +350,7 @@
       border-top: 1px solid rgba(255,215,0,.10);
     }
     .tv-theme-panel__row {
-      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;
+      display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px;
       margin-bottom: 2px;
     }
     .tv-theme-panel__grid {
@@ -364,6 +416,10 @@
 </head>
 <body>
   <div id="tv-root" class="tv">
+
+    <!-- Full-page logo background layer (logoWm effect) -->
+    <div id="logo-bg" class="logo-bg-layer" hidden></div>
+
     <header class="tv__header">
 
       <!-- ═══ EFFECT LAYER — controlled by JS ═══ -->
@@ -435,7 +491,7 @@
     <div class="tv-theme-panel__row" id="design-grid"></div>
     <div class="tv-theme-panel__title">HIỆU ỨNG HEADER</div>
     <div class="tv-theme-panel__grid" id="theme-grid"></div>
-    <div class="tv-theme-panel__hint">Phím T mở/đóng · 1–7 chọn nhanh · ← → chuyển</div>
+    <div class="tv-theme-panel__hint">Thiết kế tự đổi theo ngày · FX tự đổi mỗi giờ · T mở/đóng · 1–9 chọn FX</div>
   </div>
 
   <script src="config.js"></script>
@@ -447,13 +503,15 @@
        THEME SYSTEM
     ═══════════════════════════════════════════════════════════ */
     const THEMES = [
-      { key: 'kimsa',   name: 'Kim Sa Rơi',        note: 'Hạt vàng rơi hai bên' },
-      { key: 'sparkle', name: 'Ánh Sao Lấp Lánh',  note: 'Kim cương bắt sáng'   },
-      { key: 'coins',   name: 'Tiền Xu Xoay Rơi',  note: 'Xu vàng xoay 3D'     },
-      { key: 'chars',   name: 'Chữ Phúc Lộc Thọ',  note: '福壽財祿 nổi lên'     },
-      { key: 'bokeh',   name: 'Bokeh Vàng',         note: 'Ánh sáng mờ nhòe'    },
-      { key: 'ripple',  name: 'Sóng Nước Vàng',     note: 'Vòng sóng lan tỏa'   },
-      { key: 'rays',    name: 'Hào Quang',           note: 'Tia sáng từ trung tâm'},
+      { key: 'kimsa',     name: 'Kim Sa Rơi',        note: 'Hạt vàng rơi hai bên'   },
+      { key: 'sparkle',   name: 'Ánh Sao Lấp Lánh',  note: 'Kim cương bắt sáng'     },
+      { key: 'coins',     name: 'Tiền Xu Xoay Rơi',  note: 'Xu vàng xoay 3D'       },
+      { key: 'chars',     name: 'Chữ Phúc Lộc Thọ',  note: '福壽財祿 nổi lên'       },
+      { key: 'bokeh',     name: 'Bokeh Vàng',         note: 'Ánh sáng mờ nhòe'      },
+      { key: 'ripple',    name: 'Sóng Nước Vàng',     note: 'Vòng sóng lan tỏa'     },
+      { key: 'rays',      name: 'Hào Quang',           note: 'Tia sáng từ trung tâm' },
+      { key: 'logoWm',    name: 'Logo Watermark',      note: 'Đại Tín nổi mờ nền'   },
+      { key: 'logoFloat', name: 'Logo Thăng Hoa',      note: 'Logo vàng bay lên'     },
     ];
 
     /* ── Spawners ── */
@@ -599,21 +657,88 @@
       });
     }
 
+    function spawnLogoWm(c) {
+      /* Center logo — positioned in content area below header (~62% from top) */
+      const center = document.createElement('img');
+      center.src = 'logo-dai-tin3.png';
+      center.className = 'logo-wm-center';
+      center.style.setProperty('--wm-top', '62%');
+      c.appendChild(center);
+
+      /* Distributed logos across the content area (below the ~28% header zone) */
+      [
+        'left:6%;top:36%;width:clamp(44px,6vw,80px);--op:0.022;--dur:8s;--del:0s',
+        'right:6%;top:36%;width:clamp(44px,6vw,80px);--op:0.018;--dur:9.5s;--del:1.8s',
+        'left:26%;top:52%;width:clamp(34px,4.5vw,60px);--op:0.016;--dur:7.5s;--del:3s',
+        'right:26%;top:52%;width:clamp(34px,4.5vw,60px);--op:0.018;--dur:10s;--del:4.2s',
+        'left:6%;bottom:7%;width:clamp(38px,5vw,68px);--op:0.020;--dur:8.5s;--del:1.5s',
+        'right:6%;bottom:7%;width:clamp(38px,5vw,68px);--op:0.018;--dur:7s;--del:5s',
+      ].forEach(style => {
+        const img = document.createElement('img');
+        img.src = 'logo-dai-tin3.png';
+        img.className = 'logo-wm-corner';
+        img.style.cssText = style;
+        c.appendChild(img);
+      });
+    }
+
+    function spawnLogoFloat(c) {
+      const h = c.offsetHeight || 180;
+      for (let i = 0; i < 14; i++) {
+        const img = document.createElement('img');
+        img.src = 'logo-dai-tin3.png';
+        img.className = 'logo-float-item';
+        const size = 18 + Math.random() * 38;
+        img.style.cssText = [
+          `width:${size | 0}px`,
+          `left:${(4 + Math.random() * 92).toFixed(1)}%`,
+          `bottom:${(-5 + Math.random() * 20).toFixed(1)}%`,
+          `--dur:${(8 + Math.random() * 10).toFixed(1)}s`,
+          `--del:${(Math.random() * 14).toFixed(1)}s`,
+          `--op:${(0.06 + Math.random() * 0.09).toFixed(2)}`,
+          `--ty:${-(h + 40)}px`,
+          `--r0:${((Math.random() - 0.5) * 18).toFixed(1)}deg`,
+          `--r1:${((Math.random() - 0.5) * 18).toFixed(1)}deg`,
+        ].join(';');
+        c.appendChild(img);
+      }
+    }
+
     const SPAWNERS = {
       kimsa: spawnKimSa, sparkle: spawnSparkle, coins: spawnCoins,
       chars: spawnChars, bokeh: spawnBokeh, ripple: spawnRipple, rays: spawnRays,
+      logoFloat: spawnLogoFloat,
     };
 
     /* ── Apply theme ── */
-    let activeTheme = localStorage.getItem('tv-theme') || 'kimsa';
+    const FX_KEYS      = ['kimsa','sparkle','coins','chars','bokeh','ripple','rays','logoWm','logoFloat'];
+    const FX_AUTO_KEYS = ['kimsa','sparkle','coins','chars','bokeh','ripple','rays']; // header-only, dùng cho auto-rotate
+    function _curHourIdx() { return Math.floor(Date.now() / 3_600_000); }
+
+    /* Init: if hour changed since last visit, pick header FX by hour index */
+    const _savedHour = parseInt(localStorage.getItem('tv-theme-hour') || '0', 10);
+    let activeTheme = (_savedHour !== _curHourIdx())
+      ? FX_AUTO_KEYS[_curHourIdx() % FX_AUTO_KEYS.length]
+      : (localStorage.getItem('tv-theme') || FX_AUTO_KEYS[0]);
 
     function applyTheme(key) {
       const c = document.getElementById('fx-container');
-      c.innerHTML = '';
-      c.className = 'fx-container';
-      SPAWNERS[key]?.(c);
+      const logoBg = document.getElementById('logo-bg');
+
+      /* Clear both layers */
+      c.innerHTML = ''; c.className = 'fx-container';
+      logoBg.innerHTML = ''; logoBg.hidden = true;
+
+      if (key === 'logoWm') {
+        logoBg.hidden = false;
+        spawnLogoWm(logoBg);
+      } else {
+        SPAWNERS[key]?.(c);
+      }
+
       activeTheme = key;
       localStorage.setItem('tv-theme', key);
+      localStorage.setItem('tv-theme-hour', String(_curHourIdx()));
       document.querySelectorAll('.theme-opt').forEach(btn =>
         btn.classList.toggle('is-active', btn.dataset.key === key)
       );
@@ -621,16 +746,30 @@
 
     /* ── Design themes (CSS swap) ── */
     const DESIGNS = [
-      { key: 'a',    cssId: 'css-a',    name: 'Đỏ Vàng',   note: 'Phú Quý Đỏ'    },
-      { key: 'live', cssId: 'css-live', name: 'WOW',        note: 'Live / Original' },
-      { key: 'c',    cssId: 'css-c',    name: 'Ngọc Bích',  note: 'Xanh ngọc'     },
+      { key: 'a',    cssId: 'css-a',    name: 'Đỏ Vàng',       note: 'Phú Quý Đỏ · CN'      },
+      { key: 'live', cssId: 'css-live', name: 'WOW',            note: 'Live / Original · T2'  },
+      { key: 'c',    cssId: 'css-c',    name: 'Ngọc Bích',     note: 'Xanh ngọc · T3'       },
+      { key: 'd',    cssId: 'css-d',    name: 'Thiên Thanh',   note: 'Xanh đại dương · T4'  },
+      { key: 'e',    cssId: 'css-e',    name: 'Tím Thạch Anh', note: 'Amethyst · T5'        },
+      { key: 'f',    cssId: 'css-f',    name: 'Bạch Kim Đêm',  note: 'Platinum đen · T6'    },
+      { key: 'g',    cssId: 'css-g',    name: 'Hổ Phách',      note: 'Nâu hổ phách · T7'   },
     ];
-    let activeDesign = localStorage.getItem('tv-design') || 'a';
+
+    /* Auto-switch by day of week — resets each new day */
+    const DOW_DESIGNS = ['a', 'live', 'c', 'd', 'e', 'f', 'g']; // 0=CN … 6=T7
+    const todayStr = new Date().toDateString();
+    let activeDesign = localStorage.getItem('tv-design') || DOW_DESIGNS[new Date().getDay()];
+    if (localStorage.getItem('tv-design-date') !== todayStr) {
+      activeDesign = DOW_DESIGNS[new Date().getDay()];
+      localStorage.setItem('tv-design', activeDesign);
+      localStorage.setItem('tv-design-date', todayStr);
+    }
 
     function switchDesign(key) {
       DESIGNS.forEach(d => { document.getElementById(d.cssId).disabled = (d.key !== key); });
       activeDesign = key;
       localStorage.setItem('tv-design', key);
+      localStorage.setItem('tv-design-date', new Date().toDateString());
       document.querySelectorAll('.design-opt').forEach(b => b.classList.toggle('is-active', b.dataset.key === key));
     }
 
@@ -737,6 +876,14 @@
 
     /* ── Init theme on load ── */
     applyTheme(activeTheme);
-  </script>
+
+    /* ── FX auto-rotate: check every 60s, switch header effect on hour boundary ── */
+    setInterval(function() {
+      const h = _curHourIdx();
+      if (parseInt(localStorage.getItem('tv-theme-hour') || '0', 10) !== h) {
+        applyTheme(FX_AUTO_KEYS[h % FX_AUTO_KEYS.length]);
+      }
+    }, 60_000);
+</script>
 </body>
 </html>

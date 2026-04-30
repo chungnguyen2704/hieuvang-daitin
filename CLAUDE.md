@@ -11,15 +11,33 @@ Static web app hiển thị bảng giá vàng cho **DNTN Hiệu Vàng Đại Tí
 | `config.js` | SHEET_ID + cấu hình (auto-refresh, tên tab) |
 | `app.js` | Logic duy nhất: fetch CSV → parse → render. Expose `window.TiemVang.init(view)` |
 | `index.html` | View **mobile/public** — khách xem trên điện thoại |
-| `tv.html` | View **TV fullscreen** — đặt màn hình tại quầy |
-| `style.css` | CSS dùng chung cho cả 2 view chính |
+| `tv.html` | View **TV fullscreen** — **file production chính**, self-contained: FX effects, panel chọn design/FX, đồng hồ + âm lịch inline, keyboard shortcuts, auto-switch design theo ngày tuần |
 
-### Variant files (đang thử nghiệm UI mới)
-- `index-a/b/c.html` + `style-a/b/c.css` — 3 phương án thiết kế trang mobile
-- `tv-a/b/c.html` — 3 phương án thiết kế trang TV
-- `tv-demo-effects.html` — prototype hiệu ứng riêng lẻ
-- **`tv-dragon.html`** — **file TV latest & đầy đủ nhất** (737 dòng, self-contained): chứa FX effects (kim sa rơi, sparkle, v.v.), panel chọn theme + design, đồng hồ + âm lịch inline, keyboard shortcuts đầy đủ. Đây là file đang được phát triển chính cho TV view.
-- `preview.html` — trang preview so sánh các variant
+### CSS design themes (dùng trong `tv.html`)
+
+| File | Theme | Ngày mặc định |
+|---|---|---|
+| `style-a.css` | **Đỏ Vàng** — Phú Quý Đỏ (đỏ son + vàng) | Chủ nhật |
+| `style.css` | **WOW** — Live / Original | Thứ hai |
+| `style-c.css` | **Ngọc Bích** — Xanh ngọc đế vương | Thứ ba |
+| `style-d.css` | **Thiên Thanh** — Xanh đại dương (navy + vàng) | Thứ tư |
+| `style-e.css` | **Tím Thạch Anh** — Amethyst sang trọng | Thứ năm |
+| `style-f.css` | **Bạch Kim Đêm** — Đen bạch kim ultra premium | Thứ sáu |
+| `style-g.css` | **Hổ Phách** — Nâu hổ phách ấm áp | Thứ bảy |
+
+`tv.html` tự động chọn design theo ngày trong tuần (Sun=a, Mon=live, Tue=c, Wed=d, Thu=e, Fri=f, Sat=g). Người dùng có thể override thủ công qua panel, reset vào ngày hôm sau.
+
+### FX Effects (header animations trong `tv.html`)
+
+| Key | Tên | Mô tả |
+|---|---|---|
+| `kimsa` | Kim Sa Rơi | Hạt vàng rơi hai bên |
+| `sparkle` | Ánh Sao Lấp Lánh | Kim cương bắt sáng |
+| `coins` | Tiền Xu Xoay Rơi | Xu vàng xoay 3D |
+| `chars` | Chữ Phúc Lộc Thọ | 福壽財祿 nổi lên |
+| `bokeh` | Bokeh Vàng | Ánh sáng mờ nhòe |
+| `ripple` | Sóng Nước Vàng | Vòng sóng lan tỏa |
+| `rays` | Hào Quang | Tia sáng từ trung tâm |
 
 ## Data flow
 
@@ -45,6 +63,9 @@ Google Sheet (tab Prices + Config)
 
 - `R` → Refresh ngay
 - `F` → Toggle fullscreen
+- `T` → Mở/đóng panel chọn FX/design
+- `1–7` → Chọn nhanh FX effect
+- `← →` → Chuyển FX khi panel mở
 
 ## Icon logic (app.js: getProductIcon)
 
@@ -56,13 +77,13 @@ Match theo keyword trong tên sản phẩm (bỏ dấu):
 
 ## Git branches
 
-- `master` — production
-- `new-ui` — branch đang làm (hiện tại)
+- `master` — production (branch duy nhất, không còn `new-ui`)
 
 ## Lưu ý khi sửa
 
 - Không có build step — sửa file trực tiếp, refresh browser là thấy ngay
 - `config.js` chứa SHEET_ID thật (production) — không commit giá trị fake
-- CSS dùng CSS custom properties (`--c-gold-*`, `--c-bg-*`, v.v.) — sửa ở đầu `style.css`
+- Mỗi `style-*.css` dùng CSS custom properties `:root { --c-void, --c-gold-*, ... }` — màu sắc chính ở đầu file
 - `app.js` là IIFE, không dùng module/bundler
-- Variant files (a/b/c) là độc lập — mỗi file tự load CSS riêng của nó
+- `tv.html` là self-contained — tất cả logic JS inline ở cuối file
+- Design themes được swap bằng cách enable/disable `<link disabled>` — không reload trang

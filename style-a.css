@@ -285,7 +285,7 @@ body {
   text-transform: uppercase;
   font-feature-settings: "liga" 0, "dlig" 0;
   margin: 0;
-  background: linear-gradient(135deg, #DAA520 0%, #FFD700 15%, #FFF8E1 28%, #E8B4A0 40%, #FFD700 52%, #FFFDE0 65%, #DAA520 75%, #FFD700 88%, #FFF8E1 100%);
+  background: linear-gradient(135deg, #B8860B 0%, #FFD700 18%, #FFFDE0 32%, #DAA520 48%, #FFEC8B 62%, #FFD700 78%, #B8860B 100%);
   background-size: 300% 300%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -415,6 +415,9 @@ body {
   animation: goldShimmer 5s ease-in-out infinite;
   text-shadow: none;
 }
+.tv__col-headers .col-title { position: relative; padding-bottom: 0.28em; filter: drop-shadow(0 0 28px rgba(255,215,0,1.0)) drop-shadow(0 0 55px rgba(255,215,0,0.48)) drop-shadow(0 2px 8px rgba(0,0,0,0.4)); }
+.tv__col-headers .col-title::before { content:""; position:absolute; inset:0 -1em; background:radial-gradient(ellipse 90% 110% at 50% 65%, rgba(255,215,0,0.09) 0%, transparent 68%); pointer-events:none; border-radius:8px; z-index:-1; }
+.tv__col-headers .col-title::after { content:""; position:absolute; left:5%; right:5%; bottom:0; height:2px; background:linear-gradient(90deg,transparent,rgba(255,215,0,0.75) 20%,rgba(255,255,220,1.0) 50%,rgba(255,215,0,0.75) 80%,transparent); box-shadow:0 0 12px rgba(255,215,0,0.65),0 0 28px rgba(255,215,0,0.30); border-radius:2px; }
 
 .tv__col-headers .col-pill {
   display: flex; align-items: center; justify-content: center;
