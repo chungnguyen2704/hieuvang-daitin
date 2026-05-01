@@ -163,7 +163,7 @@ body { margin: 0; font-family: "Be Vietnam Pro", system-ui, -apple-system, sans-
 .tv__shop-address { font-family: "Be Vietnam Pro", sans-serif; font-size: clamp(0.75rem, 1vw, 1.1rem); letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-amber-pale); font-weight: 500; opacity: 0.90; margin-top: 0.3rem; display: flex; align-items: center; gap: 0.5rem; text-shadow: 0 0 12px rgba(245, 158, 11, 0.30); }
 .tv__shop-address::before { content: "◆"; color: var(--c-gold); font-size: 0.55em; opacity: 0.75; }
 
-.tv__time { position: absolute; bottom: clamp(0.6rem, 1.2vw, 1.2rem); right: clamp(1.5rem, 4vw, 4rem); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.2rem; padding: 0; white-space: nowrap; }
+.tv__time { position: absolute; bottom: clamp(0.6rem, 1.2vw, 1.2rem); right: clamp(0.5rem, 2vw, 2rem); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.2rem; padding: 0; white-space: nowrap; }
 .tv__time-ornament { display: none; }
 .tv__time .value { font-family: "Be Vietnam Pro", sans-serif; font-size: clamp(1.1rem, 1.6vw, 1.8rem); font-weight: 700; background: linear-gradient(180deg, #FDE68A 0%, #F59E0B 50%, #D97706 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-variant-numeric: tabular-nums; filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.60)); line-height: 1; letter-spacing: 0.05em; white-space: nowrap; }
 .tv__time .colon { animation: colonBlink 1s step-end infinite; -webkit-text-fill-color: var(--c-amber-bright); }
@@ -208,7 +208,7 @@ body { margin: 0; font-family: "Be Vietnam Pro", system-ui, -apple-system, sans-
 .tv__col-headers .col-pill--buy {
   color: var(--c-buy-bright);
   background: rgba(16, 185, 129, 0.16);
-  box-shadow: inset 0 -3px 0 rgba(52, 211, 153, 0.55);
+  box-shadow: none;
   font-size: clamp(1.15rem, 1.75vw, 1.95rem);
   letter-spacing: 0.10em;
 }
