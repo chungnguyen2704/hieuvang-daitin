@@ -18,10 +18,13 @@
   /* Chọn đúng CSS ngay khi head parse xong — không flash sai theme */
   (function(){
     var DOW=['a','live','c','d','e','f','g'];
-    var today=new Date().toDateString();
-    var key=(localStorage.getItem('tv-design-date')===today)
-      ?(localStorage.getItem('tv-design')||DOW[new Date().getDay()])
-      :DOW[new Date().getDay()];
+    var key='a'; // fallback nếu localStorage không khả dụng
+    try {
+      var today=new Date().toDateString();
+      key=(localStorage.getItem('tv-design-date')===today)
+        ?(localStorage.getItem('tv-design')||DOW[new Date().getDay()])
+        :DOW[new Date().getDay()];
+    } catch(e){}
     ['css-live','css-a','css-c','css-d','css-e','css-f','css-g'].forEach(function(id){
       document.getElementById(id).disabled=(id!=='css-'+key);
     });
@@ -724,7 +727,6 @@
     };
 
     /* ── Apply theme ── */
-    const FX_KEYS      = ['kimsa','sparkle','coins','chars','bokeh','ripple','rays','logoWm','logoFloat'];
     const FX_AUTO_KEYS = ['kimsa','sparkle','coins','chars','bokeh','ripple','rays']; // header-only, dùng cho auto-rotate
     function _curHourIdx() { return Math.floor(Date.now() / 3_600_000); }
 
@@ -842,7 +844,8 @@
       if (num >= 1 && num <= THEMES.length) { applyTheme(THEMES[num-1].key); return; }
 
       if (!panel.hidden) {
-        const idx = THEMES.findIndex(t => t.key === activeTheme);
+        let idx = THEMES.findIndex(t => t.key === activeTheme);
+        if (idx === -1) idx = 0; // stale localStorage key — reset to first
         if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
           applyTheme(THEMES[(idx - 1 + THEMES.length) % THEMES.length].key);
           resetAutoClose();
