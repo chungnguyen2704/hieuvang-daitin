@@ -8,12 +8,25 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800;900&family=Lora:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,500;1,600&display=swap">
   <link id="css-live" rel="stylesheet" href="style.css"   disabled>
-  <link id="css-a"    rel="stylesheet" href="style-a.css">
+  <link id="css-a"    rel="stylesheet" href="style-a.css" disabled>
   <link id="css-c"    rel="stylesheet" href="style-c.css" disabled>
   <link id="css-d"    rel="stylesheet" href="style-d.css" disabled>
   <link id="css-e"    rel="stylesheet" href="style-e.css" disabled>
   <link id="css-f"    rel="stylesheet" href="style-f.css" disabled>
   <link id="css-g"    rel="stylesheet" href="style-g.css" disabled>
+  <script>
+  /* Chọn đúng CSS ngay khi head parse xong — không flash sai theme */
+  (function(){
+    var DOW=['a','live','c','d','e','f','g'];
+    var today=new Date().toDateString();
+    var key=(localStorage.getItem('tv-design-date')===today)
+      ?(localStorage.getItem('tv-design')||DOW[new Date().getDay()])
+      :DOW[new Date().getDay()];
+    ['css-live','css-a','css-c','css-d','css-e','css-f','css-g'].forEach(function(id){
+      document.getElementById(id).disabled=(id!=='css-'+key);
+    });
+  })();
+  </script>
   <style>
     /* ── FX container (hosts all effects) ── */
     .tv__header { overflow: hidden; }
@@ -877,11 +890,15 @@
     /* ── Init theme on load ── */
     applyTheme(activeTheme);
 
-    /* ── FX auto-rotate: check every 60s, switch header effect on hour boundary ── */
+    /* ── FX auto-rotate + design day-switch: check every 60s ── */
     setInterval(function() {
       const h = _curHourIdx();
       if (parseInt(localStorage.getItem('tv-theme-hour') || '0', 10) !== h) {
         applyTheme(FX_AUTO_KEYS[h % FX_AUTO_KEYS.length]);
+      }
+      const nowDay = new Date().toDateString();
+      if (localStorage.getItem('tv-design-date') !== nowDay) {
+        switchDesign(DOW_DESIGNS[new Date().getDay()]);
       }
     }, 60_000);
 </script>
